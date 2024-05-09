@@ -3,10 +3,10 @@ package ru.ifmo.se.points;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-import jakarta.ejb.Singleton;
+import jakarta.inject.Named;
 import ru.ifmo.se.points.Point.ShotResult;
 
-@Singleton(name = "area")
+@Named("area")
 public class AreaCheckBean {
     public Point calculate(double valueX, double valueY, int valueR) {
         Point point = new Point();

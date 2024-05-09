@@ -2,8 +2,8 @@ package ru.ifmo.se.rest;
 
 import java.util.List;
 
-import jakarta.ejb.EJB;
-import jakarta.ejb.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.DELETE;
@@ -19,16 +19,15 @@ import ru.ifmo.se.points.Point;
 import ru.ifmo.se.points.PointsContainerBean;
 
 @Path("/points")
-@Singleton
+@Named
 public class PointsRestService {
 
-    @EJB(name = "points")
+    @Inject
     PointsContainerBean points;
 
-    @EJB(name = "area")
+    @Inject
     AreaCheckBean areaCheckBean;
 
-    
     @GET
     @Path("/echo/{echo}")
     @Produces("text/html")
@@ -36,17 +35,17 @@ public class PointsRestService {
         var userName = getUserName(request);
         return "<h1>'" + echo + "', said " + userName + "</h1>";
     }
-    
+
     @GET
-    @Path("/all")
+    @Path("/")
     @Produces("application/json")
     public List<Point> getPointsByUserId(@Context HttpServletRequest request) {
         var userName = getUserName(request);
         return points.getPointsByUserName(userName);
     }
-    
+
     @POST
-    @Path("/shot")
+    @Path("/")
     @Produces("application/json")
     public Point shot(@QueryParam("X") double x, @QueryParam("Y") double y, @QueryParam("R") int r,
             @Context HttpServletRequest request) {
@@ -57,28 +56,23 @@ public class PointsRestService {
     }
 
     @DELETE
-    @Path("/clear")
+    @Path("/")
     public void clear(@Context HttpServletRequest request) {
         var userName = getUserName(request);
         points.clearPointsByUserName(userName);
     }
-    
+
     @GET
     @Path("/logout")
     public void logout(@Context HttpServletRequest request) throws ServletException {
         request.logout();
     }
-    
+
     private String getUserName(HttpServletRequest request) {
         var userName = request.getUserPrincipal().getName();
         if (userName == null) {
             userName = "DefaultUser";
         }
         return userName;
-    }
-    
-    public PointsRestService() {
-        points = new PointsContainerBean();
-        areaCheckBean = new AreaCheckBean();
     }
 }

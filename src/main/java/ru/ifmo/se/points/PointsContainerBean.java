@@ -2,10 +2,10 @@ package ru.ifmo.se.points;
 
 import java.util.List;
 
-import jakarta.ejb.Singleton;
+import jakarta.inject.Named;
 import ru.ifmo.se.persistence.PointService;
 
-@Singleton(name = "points")
+@Named("points")
 public class PointsContainerBean {
 
     private PointService dataBase;
